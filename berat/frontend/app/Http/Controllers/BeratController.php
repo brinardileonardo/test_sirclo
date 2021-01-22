@@ -28,13 +28,33 @@ class BeratController extends Controller
 
 	public function add_process(Request $request)
 	{
-		DB::table('tbl_berat')->insert([
-            'tanggal' => $request->tanggal,
-            'max' => $request->berat_max,
-            'min' => $request->berat_min
-        ]);
+        $postfields = array(
+            "tanggal" => $request->tanggal,
+            "max" => $request->berat_max,
+            "min" => $request->berat_min
+        );
 
-        return redirect('/index')->with('message','Sukses Nambah Data');
+        $hasil = json_encode($postfields);
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost:9000/save_berat');
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $hasil);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $server_output = curl_exec ($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close ($ch);
+
+        $a = json_decode($server_output, true);
+
+        if($httpcode == 200){
+            return redirect('/index')->with('message',$a['message']);
+        }else{
+            return redirect('/index')->with('message_error','Api Timeout !');
+        }
 	}
 
 	public function edit_view($id)
@@ -45,13 +65,34 @@ class BeratController extends Controller
 
 	public function update_process(Request $request)
 	{
-		DB::table('tbl_berat')->where('id',$request->id)->update([
-			'tanggal' => $request->tanggal,
-            'max' => $request->berat_max,
-            'min' => $request->berat_min
-		]);
+        $postfields = array(
+            "id" => $request->id,
+            "tanggal" => $request->tanggal,
+            "max" => $request->berat_max,
+            "min" => $request->berat_min
+        );
 
-		return redirect('/index')->with('message_edit','Sukses Edit Data');;
+        $hasil = json_encode($postfields);
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost:9000/update_berat');
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $hasil);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $server_output = curl_exec ($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close ($ch);
+
+        $a = json_decode($server_output, true);
+
+        if($httpcode == 200){
+            return redirect('/index')->with('message',$a['message']);
+        }else{
+            return redirect('/index')->with('message_error','Api Timeout !');
+        }
 	}
 
     public function show_detail($id)

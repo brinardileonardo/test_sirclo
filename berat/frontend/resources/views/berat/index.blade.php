@@ -32,9 +32,9 @@
 				    </div>
 				@endif
 
-				@if(session()->has('message_edit'))
-				    <div class="alert alert-success">
-				        {{ session()->get('message_edit') }}
+				@if(session()->has('message_error'))
+				    <div class="alert alert-danger">
+				        {{ session()->get('message_error') }}
 				    </div>
 				@endif
 

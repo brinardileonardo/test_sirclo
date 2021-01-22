@@ -1,0 +1,5 @@
+Frontend menggunakan Laravel (run : php artisan serve)
+Backend menggunakan Lumen (run: php -S localhost:9000 -t public)
+
+login admin: admin@gmail.com
+pass: admin12345
